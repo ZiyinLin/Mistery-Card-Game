@@ -10,6 +10,7 @@
 #include "GameState.h"
 #include "Player.h"
 #include <string>
+#include <memory>
 
 enum CardType{
     midi,   //谜底
@@ -49,5 +50,7 @@ private:
     int mystery_point;
     
 };
+
+using card_pointer = std::shared_ptr<Card>;
 
 #endif
