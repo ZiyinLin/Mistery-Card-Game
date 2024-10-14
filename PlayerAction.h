@@ -24,7 +24,7 @@ private:
     card_pointer card;              // to choose your hand card
     card_pointer target_card;       // to choose other's card
     std::string target_player_id;
-    bool faceUp;
+    bool face_up;
 };
 
 #endif
