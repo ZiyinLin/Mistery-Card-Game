@@ -13,11 +13,20 @@ public:
     std::string& getPlayerID();
     std::string& getNickname();
     
+    /* player's action using new added smart pointer
+     * it has been added in Card class
+     * however the display of hand cards and played cards
+     * are controled by GameState instead of here
+     */  
+    void drawCard(card_pointer card);
+    void playCard(card_pointer card, GameState& gameState, bool face_up);
+    void discardCard(card_pointer card);
+
 private:
     std::string player_id;
     std::string player_nickname;
-    std::vector<Card> hand_cards;
-    std::vector<Card> played_cards;
+    std::vector<card_pointer> hand_cards;
+    std::vector<card_pointer> played_cards;
     bool is_connected;
 };
 #endif
