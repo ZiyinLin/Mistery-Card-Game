@@ -1,6 +1,5 @@
 #ifndef PLAYERACTION_H
 #define PLAYERACTION_H
-
 #include "Card.h"
 #include <string>
 
@@ -13,7 +12,7 @@ enum Action{
 
 class PlayerAction{
 public:
-    PlayerAction(Action a, const std::string s) :
+    PlayerAction(Action a, std::string s) :
     action_type(a), player_id(s){}
 
 
