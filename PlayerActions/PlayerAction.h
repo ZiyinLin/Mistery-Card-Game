@@ -1,19 +1,44 @@
 #ifndef PLAYERACTION_H
 #define PLAYERACTION_H
 #include "Card.h"
+#include "Message.h"
 #include <string>
 
+
 enum Action{
-    dicard_card,                 // to discard cards in 1st phrase
-    play_card,                   // to play a card in 2nd phrase
-    select_oriented_card,        // to select objective card of "JIE" and "du"
-    point_out_card,              // to point out a card in 3rd phrase
+    DISCARD_CARD,                 // 弃牌阶段时弃置手牌
+    PLAY_CARD,                   // 出牌阶段时打出手牌
+    SELECT_ORIENTED_CARD,        // 打出解或读时选择他人卡牌
+    POINT_OUT_CARD,              // 指认阶段时指认他人卡牌
 };
 
 class PlayerAction{
 public:
-    PlayerAction(Action a, std::string s) :
-    action_type(a), player_id(s){}
+
+    PlayerAction(Action a, std::string s, card_pointer c, bool b, std::string ts="", card_pointer tc=nullptr):
+    action_type(a), player_id(s), card(c), target_player_id(ts), target_card(tc){}
+
+    nlohmann::json toJson();
+    
+    static PlayerAction fromJson(json j);
+    
+    //序列化后用Message封装
+    Message toMessage();
+    
+    //从Message对象中提取内容并反序列化
+    static PlayerAction fromMessage(const Message& message);
+
+    Action getActionType();
+
+    std::string getPlayerId();
+
+    card_pointer getCard();
+
+    std::string getTargetPlayerID();
+
+    card_pointer getTargetCard();
+
+    bool getFaceUp();
 
 
 

@@ -9,5 +9,6 @@ class InduceCard : public Card{
     public:
         InduceCard(const std::string e) : Card(CardType::INDUCE, e){}
         void play(Player* player_pointer, GameState& gameState, bool face_up) override;
+        void trigger(Player* player_pointer, GameState& gameState, bool face_up) override;
 };
 #endif

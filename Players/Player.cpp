@@ -7,10 +7,6 @@ using namespace std;
 
 class Player{
     public:
-      Player(const string& id, const string& nickname){
-        player_id=id;
-        player_nickname=nickname;
-      }
 
       void drawCard(card_pointer card){
 
@@ -120,11 +116,15 @@ class Player{
           return count;
       }
 
+      bool chooseFaceUp(GameState& gameState){
+
+      }
+
       card_pointer chooseHandCard(GameState& gameState){
 
       }
 
-      card_pointer chooseTargetCard(GameState& GameState){
+      card_pointer chooseTargetCard(GameState& gameState){
 
       }
 

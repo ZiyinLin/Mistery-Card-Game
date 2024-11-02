@@ -19,8 +19,8 @@ public:
      * are controled by GameState instead of here
      */  
     void drawCard(card_pointer card);
-    void playCard(card_pointer card, GameState& gameState, bool faceUp);
-    void discardCard(card_pointer card);
+    void playCard(card_pointer card, GameState& gameState, bool faceUp);//打出牌
+    void discardCard(card_pointer card);//弃牌  
 
     void addHandCard(card_pointer card);//给玩家添加手牌
     void removeHandCard(card_pointer card);//移除手牌
@@ -45,7 +45,9 @@ public:
 
     int getMysteries();
 
-    card_pointer chooseHandCard(GameState& gameState);//打出“幌”、“易”或“虑”后选择手牌
+    bool chooseFaceUp(GameState& gameState);
+
+    card_pointer chooseHandCard(GameState& gameState);//弃牌阶段或打出“幌”、“易”或“虑”后选择手牌
     card_pointer chooseTargetCard(GameState& GameState);//选择别人打出的牌
     std::string chooseTargetPlayerID(GameState& gameState);//打出“易”后选择场上其他玩家
     

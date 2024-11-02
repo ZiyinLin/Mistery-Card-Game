@@ -2,7 +2,10 @@
 #define GAMESTATE_H
 #include "Player.h"
 #include "Card.h"
+#include "Message.h"
+#include "PlayerAction.h"
 #include <string>
+
 
 enum State{
     INIT,//初始化游戏
@@ -18,12 +21,15 @@ enum State{
 
 class GameState{
     public:
-          GameState(){};
+         GameState(){};
           
           void setState(State stateType);
           State getState();
           
           std::vector<Player*> getAllPlayers();
+          
+          //获取当前玩家
+          Player* getCurrentPlayer();
           
           //获取下家
           Player* getNextPlayer(Player* player);
@@ -37,7 +43,17 @@ class GameState{
           //告知玩家不合法行为或错误处理
           void sendErrorMessage(std::string playerID, std::string error);
 
+          // 序列化 PlayerAction
+          Message serializeAction(const PlayerAction& action);
 
+          // 反序列化 PlayerAction
+          PlayerAction deserializeAction(const Message& message);
+
+          nlohmann::json toJson() const;
+          static GameState fromJson(const nlohmann::json& j);
+
+          Message toMessage() const;
+          static GameState fromMessage(const Message& message);
 
     private:
           State state_type;

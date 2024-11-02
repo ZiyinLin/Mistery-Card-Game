@@ -9,5 +9,6 @@ class SolveCard : public Card{
     public:
         SolveCard(const std::string e) : Card(CardType::SOLVE, e){}
         void play(Player* player, GameState& gameState, bool faceUp) override;
+        void trigger(Player* player_pointer, GameState& gameState, bool face_up) override;
 };
 #endif

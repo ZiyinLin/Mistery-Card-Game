@@ -8,29 +8,35 @@
 using namespace std;
 
 void CoverCard::play(Player* player, GameState &gameState, bool faceUp){
-    this->setFaceUp(faceUp);
-    player->getPlayedCards().push_back(shared_from_this());
-
-    if(face_up){
+      this->setFaceUp(faceUp);
        //获取玩家出牌堆
-       vector<card_pointer> playerPlayedCards = player->getPlayedCards();
+      const auto& playedCards = player->getPlayedCards();
        
-       //计算出牌堆中暗置牌的数量
-       int count=0;
-       for(card_pointer card : playerPlayedCards){
-          bool isFaceUp = card->getFaceUp();
-          if(!isFaceUp){
+      //计算出牌堆中暗置牌的数量
+      int count=0;
+      for(card_pointer card : playedCards){
+         bool isFaceUp = card->getFaceUp();
+         if(!isFaceUp){
             count++;
-            //将这些暗置牌收回手牌
-            player->removePlayedCard(card);
-            player->addHandCard(card);
-          }
-       }
-       
+         }
+      }
+
+    if(this->getFaceUp()==true){
        //出牌堆没有暗置牌，技能无法生效
        if(count==0){
           gameState.sendErrorMessage(player->getPlayerID(),"没有暗置牌，技能无效！");
+          this->setValidPlay(false);
           return;
+       }
+       
+       player->getPlayedCards().push_back(shared_from_this());
+       
+       //收回所有暗置牌
+       for(card_pointer card:playedCards){
+         if(card->getFaceUp()==false){
+            player->removePlayedCard(card);
+            player->addHandCard(card);
+         }
        }
         
        //打出等量的暗置牌
@@ -42,9 +48,37 @@ void CoverCard::play(Player* player, GameState &gameState, bool faceUp){
           player->addPlayedCard(card);
           remain_cover--;
        }
+
+       this->setValidPlay(true);
        
     }
     else{
-       this->setMysteryPoints(1);
+      player->getPlayedCards().push_back(shared_from_this());
+      this->setMysteryPoints(1);
+      this->setValidPlay(true);
     }
 }
+
+
+void CoverCard::trigger(Player* player, GameState &gameState, bool faceUp){
+   this->setFaceUp(faceUp);
+       //获取玩家出牌堆
+      const auto& playedCards = player->getPlayedCards();
+       
+      //计算出牌堆中暗置牌的数量
+      int count=0;
+      for(card_pointer card : playedCards){
+         bool isFaceUp = card->getFaceUp();
+         if(!isFaceUp){
+            count++;
+         }
+      }
+
+      if(count==0){
+         return;
+      }else{
+         this->play(player, gameState, true);
+      }
+   
+}
+

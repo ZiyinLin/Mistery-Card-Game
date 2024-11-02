@@ -8,8 +8,9 @@ using namespace std;
 void ReverseCard::play(Player* player, GameState& gameState, bool faceUp){
     this->setFaceUp(faceUp);
     player->getPlayedCards().push_back(shared_from_this());
+
     
-    if(face_up){
+    if(this->getFaceUp()==true){
         //获取所有玩家
         const auto& allPlayers = gameState.getAllPlayers();
         //遍历所有玩家
@@ -33,4 +34,8 @@ void ReverseCard::play(Player* player, GameState& gameState, bool faceUp){
     else{
         this->setMysteryPoints(1);
     }
+}
+
+void ReverseCard::trigger(Player* player, GameState &gameState, bool faceUp){
+    this->play(player, gameState, faceUp);
 }

@@ -8,9 +8,25 @@ using namespace std;
 
 void ThinkCard::play(Player* player, GameState& gameState, bool faceUp){
     this->setFaceUp(faceUp);
-    player->getPlayedCards().push_back(shared_from_this());
+
+    vector<card_pointer> handCards = player->getHandCards();
+    bool hasAnswer=false;
+    for(card_pointer card:handCards){
+      if(card->getType()==ANSWER){
+        hasAnswer=true;
+        break;
+      }
+    }
         
-    if(face_up){
+    if(this->getFaceUp()==true){
+       if(handCards.size()<2 || (handCards.size()==2 && hasAnswer)){
+            gameState.sendErrorMessage(player->getPlayerID(),"手牌不足，无法虑牌！");
+            this->setValidPlay(false);
+            return;
+       }
+
+       player->getPlayedCards().push_back(shared_from_this());
+
        int remain_think=2;
        //共换两次
        while(remain_think>0){
@@ -53,7 +69,26 @@ void ThinkCard::play(Player* player, GameState& gameState, bool faceUp){
     }
     
     else{
+    player->getPlayedCards().push_back(shared_from_this());
     this->setMysteryPoints(1);
       }
 
+}
+
+
+void ThinkCard::trigger(Player* player, GameState &gameState, bool faceUp){
+    const auto& handCards = player->getHandCards();
+    bool hasAnswer=false;
+    for(card_pointer card:handCards){
+      if(card->getType()==ANSWER){
+        hasAnswer=true;
+        break;
+      }
+    }
+    
+    if((handCards.size()<2 || (handCards.size()==2 && hasAnswer))){
+      return;
+    }else{
+      this->play(player, gameState, true);
+    }
 }

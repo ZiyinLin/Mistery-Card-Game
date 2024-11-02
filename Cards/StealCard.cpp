@@ -7,11 +7,51 @@
 using namespace std;
 
 void StealCard::play(Player* player, GameState& gameState, bool faceUp){
-    this->setFaceUp(faceUp);
-    player->getPlayedCards().push_back(shared_from_this());
+   this->setFaceUp(faceUp);
+   //先创建int类型变量，计算场上其他玩家的明置牌数量
+   int count=0;
+        
+   const auto& allPlayers = gameState.getAllPlayers();
+   //遍历除当前玩家外的所有玩家
+   for(Player* currentPlayer : allPlayers){
+      if(currentPlayer==player){
+         continue;
+      }
+      //遍历每个玩家的出牌容器
+      vector<card_pointer>playedCards = currentPlayer->getPlayedCards();
+      for(int i=0; i<playedCards.size();++i){
+         if(playedCards[i]->getFaceUp()==false){
+            count++;
+         }
+      }
+   }
 
-    if(face_up){
+   int handCount=0;
+   for(card_pointer card : player->getHandCards()){
+      if(card->getType()!=TRAP && card->getType()!=HIDE && card->getType()!=ANSWER){
+         handCount++;
+      }
+   }
+
+    
+    if(this->getFaceUp()==true){
+         //场上其他玩家没有明置牌，收回这张牌
+         if(count==0){
+            gameState.sendErrorMessage(player->getPlayerID(),"其他玩家没有暗置牌，无法明置打出！");
+            this->setValidPlay(false);
+            return;
+         }
+
+         if(handCount==0){
+            gameState.sendErrorMessage(player->getPlayerID(),"没有可以明置打出的手牌，无法明置打出！");
+            this->setValidPlay(false);
+            return;
+         }
+
+         player->getPlayedCards().push_back(shared_from_this());
+        
         while(true){
+            
             card_pointer targetCard = player->chooseTargetCard(gameState);
             bool isFaceUp=targetCard->getFaceUp();
             
@@ -68,7 +108,35 @@ void StealCard::play(Player* player, GameState& gameState, bool faceUp){
         }
     
     else{
-        this->setMysteryPoints(1);
+      player->getPlayedCards().push_back(shared_from_this());
+      this->setMysteryPoints(1);
       }
 
     }
+
+
+void StealCard::trigger(Player* player, GameState &gameState, bool faceUp){
+   //先创建int类型变量，计算场上其他玩家的明置牌数量
+   int count=0;
+        
+   const auto& allPlayers = gameState.getAllPlayers();
+   //遍历除当前玩家外的所有玩家
+   for(Player* currentPlayer : allPlayers){
+      if(currentPlayer==player){
+         continue;
+      }
+      //遍历每个玩家的出牌容器
+      vector<card_pointer>playedCards = currentPlayer->getPlayedCards();
+      for(int i=0; i<playedCards.size();++i){
+         if(playedCards[i]->getFaceUp()==false){
+            count++;
+         }
+      }
+   }
+
+   if(count==0){
+      return;
+   }else{
+      this->play(player, gameState, true);
+   }
+}

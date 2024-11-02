@@ -12,6 +12,7 @@
 #include <string>
 #include <memory>
 
+
 enum CardType{
     ANSWER,   //谜底
     SOLVE,    //解
@@ -48,9 +49,17 @@ public:
 
     void setHasTrigger(bool hasTrigger);
     bool getHasTrigger();
+
+    void setValidPlay(bool validPlay);
+    bool getValidPlay();
     
     // diffrent cards are played diffrently, therefore we have to override play function
     virtual void play(Player* player_pointer, GameState& gameState, bool face_up);
+    virtual void trigger(Player* player_pointer, GameState& gameState, bool face_up);
+
+    nlohmann::json toJson();
+
+    static card_pointer fromJson(const nlohmann::json j);
 
 protected:
     CardType card_type;
@@ -58,8 +67,8 @@ protected:
     bool face_up;  // to mark is a card is facing up
     bool has_trigger_effect=false;  // to meet the requirment of "解" and "匿"
     bool is_last_face_down;
+    bool valid_play=true;//判断是否有效执行了play函数
     int mystery_point=0;
-    
 };
 
 using card_pointer = std::shared_ptr<Card>;
